@@ -1,7 +1,9 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import String exposing (append)
 import Random
 
 
@@ -65,5 +67,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text (toString model.dieFace) ]
+        , img [ src <| append "/examples/img/dice-" <| toString model.dieFace ++ ".png", alt "dice" ] []
+        , br [] []
         , button [ onClick Roll ] [ text "Roll" ]
         ]
