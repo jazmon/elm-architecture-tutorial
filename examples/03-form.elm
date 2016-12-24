@@ -23,15 +23,28 @@ main =
 type alias Model =
     { name : String
     , age : Int
+    , memer : Bool
+    , gender : MaybeGender
     , password : String
     , passwordAgain : String
     , validate : Bool
     }
 
 
+type Gender
+    = Male
+    | Female
+    | Other
+
+
+type MaybeGender
+    = Just Gender
+    | Nothing
+
+
 model : Model
 model =
-    Model "" 0 "" "" False
+    Model "" 0 False Nothing "" "" False
 
 
 
@@ -41,9 +54,11 @@ model =
 type Msg
     = Name String
     | Age String
+    | Gender Gender
     | Password String
     | PasswordAgain String
     | Validate
+    | Memer
 
 
 update : Msg -> Model -> Model
@@ -57,6 +72,18 @@ update msg model =
 
         Age age ->
             { model | age = Result.withDefault 0 (String.toInt age) }
+
+        Memer ->
+            { model
+                | memer = not model.memer
+                , validate = False
+            }
+
+        Gender gender ->
+            { model
+                | gender = Just gender
+                , validate = False
+            }
 
         Password password ->
             { model
@@ -82,11 +109,43 @@ view : Model -> Html Msg
 view model =
     div []
         [ input [ type_ "text", placeholder "Name", onInput Name ] []
+        , br [] []
         , input [ type_ "number", placeholder "21", onInput Age ] []
+        , br [] []
         , input [ type_ "password", placeholder "Password", onInput Password ] []
+        , br [] []
         , input [ type_ "password", placeholder "Re-enter Password", onInput PasswordAgain ] []
+        , br [] []
+        , checkbox Memer "Memer"
+        , br [] []
+        , fieldset []
+            [ radio "Male" (Gender Male)
+            , radio "Female" (Gender Female)
+            , radio "Other" (Gender Other)
+            ]
+        , br [] []
         , button [ type_ "submit", value "Submit", onClick Validate ] [ text "submit" ]
         , viewValidation model
+        ]
+
+
+radio : String -> msg -> Html msg
+radio value msg =
+    label
+        [ style [ ( "padding", "20px" ) ]
+        ]
+        [ input [ type_ "radio", name "gender", onClick msg ] []
+        , text value
+        ]
+
+
+checkbox : Msg -> String -> Html Msg
+checkbox msg name =
+    label
+        [ style [ ( "padding", "20px" ) ]
+        ]
+        [ input [ type_ "checkbox", onClick msg ] []
+        , text name
         ]
 
 
