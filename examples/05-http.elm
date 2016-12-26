@@ -53,7 +53,9 @@ update msg model =
             ( model, getRandomGif model.topic )
 
         NewGif (Ok newUrl) ->
-            ( Model model.topic newUrl, Cmd.none )
+            ( Model model.topic newUrl Nothing
+            , Cmd.none
+            )
 
         NewGif (Err error) ->
             ( { model | error = Just error }, Cmd.none )
@@ -87,7 +89,7 @@ errorMessage maybe =
                     "Bad status: " ++ toString response.status.code
 
                 Http.BadPayload payload response ->
-                    "Invalid payload" ++ toString payload
+                    "Invalid payload: " ++ toString payload
 
 
 errorView : Model -> Html msg
@@ -120,7 +122,10 @@ view model =
         , br [] []
         , img [ src model.gifUrl ] []
         , br [] []
-        , errorView model
+        , if model.error /= Nothing then
+            errorView model
+          else
+            div [] []
         ]
 
 
