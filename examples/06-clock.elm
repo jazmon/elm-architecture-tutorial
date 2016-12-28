@@ -60,54 +60,77 @@ subscriptions model =
 -- VIEW
 
 
-hourLine : Model -> List (Attribute msg)
-hourLine model =
+hourLine : Model -> Int -> List (Attribute msg)
+hourLine model radius =
     let
         angle =
             turns (Time.inHours model) / 12
 
         handX =
-            toString (50 + 40 * cos angle)
+            toString (toFloat radius + 40 * cos angle)
 
         handY =
-            toString (50 + 40 * sin angle)
+            toString (toFloat radius + 40 * sin angle)
     in
-        [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#000f1a" ]
+        [ x1 <| toString radius
+        , y1 <| toString radius
+        , x2 handX
+        , y2 handY
+        , stroke "#000f1a"
+        ]
 
 
-minuteLine : Model -> List (Attribute msg)
-minuteLine model =
+minuteLine : Model -> Int -> List (Attribute msg)
+minuteLine model radius =
     let
         angle =
             turns (Time.inHours model)
 
         handX =
-            toString (50 + 40 * cos angle)
+            toString (toFloat radius + 40 * cos angle)
 
         handY =
-            toString (50 + 40 * sin angle)
+            toString (toFloat radius + 40 * sin angle)
     in
-        [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#023963" ]
+        [ x1 <| toString radius
+        , y1 <| toString radius
+        , x2 handX
+        , y2 handY
+        , stroke "#023963"
+        ]
 
 
-secondLine : Model -> List (Attribute msg)
-secondLine model =
+secondLine : Model -> Int -> List (Attribute msg)
+secondLine model radius =
     let
         angle =
             turns (Time.inMinutes model)
 
         handX =
-            toString (50 + 40 * cos angle)
+            toString (toFloat radius + 40 * cos angle)
 
         handY =
-            toString (50 + 40 * sin angle)
+            toString (toFloat radius + 40 * sin angle)
     in
-        [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#cb1122" ]
+        [ x1 <| toString radius
+        , y1 <| toString radius
+        , x2 handX
+        , y2 handY
+        , stroke "#cb1122"
+        ]
 
 
-hourIndicator : number -> Svg msg
-hourIndicator num =
-    line [ id <| "hour" ++ toString (num), x1 "50", y1 "10", x2 "50", y2 "0", stroke "#cb1122" ] []
+hourIndicator : number -> number -> Svg msg
+hourIndicator radius num =
+    line
+        [ id <| "hour" ++ toString (num)
+        , x1 <| toString radius
+        , y1 "10"
+        , x2 <| toString radius
+        , y2 "0"
+        , stroke "#cb1122"
+        ]
+        []
 
 
 timeView : Model -> Html msg
@@ -152,12 +175,12 @@ view model =
                     ]
                 , g []
                     (Array.toList
-                        (Array.map hourIndicator hours)
+                        (Array.map (hourIndicator radius) hours)
                     )
                 , g []
-                    [ line (hourLine model) []
-                    , line (secondLine model) []
-                    , line (minuteLine model) []
+                    [ line (hourLine model radius) []
+                    , line (secondLine model radius) []
+                    , line (minuteLine model radius) []
                     ]
                 ]
             , timeView model
