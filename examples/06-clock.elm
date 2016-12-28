@@ -6,6 +6,8 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time exposing (Time, second)
 import Date exposing (fromTime)
+import List
+import Array
 
 
 main : Program Never Model Msg
@@ -104,6 +106,15 @@ secondLine model =
         [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#cb1122" ]
 
 
+
+-- hourIndicator : Model -> number -> line
+
+
+hourIndicator : number -> Svg msg
+hourIndicator num =
+    line [ id <| "hour" ++ toString (num), x1 "50", y1 "10", x2 "50", y2 "0", stroke "#cb1122" ] []
+
+
 timeView : Model -> Html msg
 timeView model =
     div []
@@ -113,8 +124,16 @@ timeView model =
 view : Model -> Html Msg
 view model =
     let
+        radius : number
         radius =
             50
+
+        hours =
+            Array.initialize 11 identity
+
+        -- foo =
+        --
+        --         :: Array.toList (Array.map hourIndicator hours)
     in
         div
             [ Html.Attributes.style
@@ -126,11 +145,29 @@ view model =
                 , ( "justify-content", "center" )
                 ]
             ]
-            [ svg [ viewBox "0 0 100 100", width "300px", Html.Attributes.style [ ( "flex-grow", "0" ) ] ]
-                [ circle [ cx <| toString radius, cy <| toString radius, r <| toString radius, fill "#0B79CE" ] []
-                , line (hourLine model) []
-                , line (secondLine model) []
-                , line (minuteLine model) []
+            [ svg
+                [ viewBox "0 0 100 100"
+                , width "300px"
+                , Html.Attributes.style [ ( "flex-grow", "0" ) ]
+                ]
+                [ g []
+                    [ circle
+                        [ cx <| toString radius
+                        , cy <| toString radius
+                        , r <| toString radius
+                        , fill "#0B79CE"
+                        ]
+                        []
+                    ]
+                , g []
+                    (Array.toList
+                        (Array.map hourIndicator hours)
+                    )
+                , g []
+                    [ line (hourLine model) []
+                    , line (secondLine model) []
+                    , line (minuteLine model) []
+                    ]
                 ]
             , timeView model
             ]
