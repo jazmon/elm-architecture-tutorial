@@ -6,7 +6,6 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Time exposing (Time, second)
 import Date exposing (fromTime)
-import List
 import Array
 
 
@@ -106,10 +105,6 @@ secondLine model =
         [ x1 "50", y1 "50", x2 handX, y2 handY, stroke "#cb1122" ]
 
 
-
--- hourIndicator : Model -> number -> line
-
-
 hourIndicator : number -> Svg msg
 hourIndicator num =
     line [ id <| "hour" ++ toString (num), x1 "50", y1 "10", x2 "50", y2 "0", stroke "#cb1122" ] []
@@ -130,10 +125,6 @@ view model =
 
         hours =
             Array.initialize 11 identity
-
-        -- foo =
-        --
-        --         :: Array.toList (Array.map hourIndicator hours)
     in
         div
             [ Html.Attributes.style
