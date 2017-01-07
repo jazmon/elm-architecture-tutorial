@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (append)
 import Random
+import Array exposing (Array, fromList, map)
 
 
 main : Program Never Model Msg
@@ -22,13 +23,13 @@ main =
 
 
 type alias Model =
-    { dieFace : Int
+    { dieFaces : Array Int
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model 1, Cmd.none )
+    ( Model <| fromList [ 1, 1 ], Cmd.none )
 
 
 
@@ -37,14 +38,14 @@ init =
 
 type Msg
     = Roll
-    | NewFace Int
+    | NewFace (Array Int)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Roll ->
-            ( model, Random.generate NewFace (Random.int 1 6) )
+            ( model, Array.map Random.generate NewFace (Random.int 1 6) model.dieFaces )
 
         NewFace newFace ->
             ( Model newFace, Cmd.none )
@@ -66,8 +67,7 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text (toString model.dieFace) ]
-        , img [ src <| append "/examples/img/dice-" <| toString model.dieFace ++ ".png", alt "dice" ] []
+        [ img [ src <| append "/examples/img/dice-" <| toString model.dieFaces ++ ".png", alt "dice" ] []
         , br [] []
         , button [ onClick Roll ] [ text "Roll" ]
         ]

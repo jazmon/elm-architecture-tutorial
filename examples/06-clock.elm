@@ -7,6 +7,7 @@ import Svg.Attributes exposing (..)
 import Time exposing (Time, second)
 import Date exposing (fromTime)
 import Array
+import Debug exposing (log)
 
 
 main : Program Never Model Msg
@@ -21,6 +22,12 @@ main =
 
 
 -- MODEL
+
+
+type Hand
+    = Minute
+    | Second
+    | Hour
 
 
 type alias Model =
@@ -58,6 +65,11 @@ subscriptions model =
 
 
 -- VIEW
+-- handLine : Hand -> Model -> Int -> List (Attribute msg)
+-- handLine hand model radius =
+--     case hand of
+--         Second ->
+--
 
 
 hourLine : Model -> Int -> List (Attribute msg)
@@ -112,12 +124,13 @@ secondLine model radius =
         handY =
             toString (toFloat radius + 40 * sin angle)
     in
-        [ x1 <| toString radius
-        , y1 <| toString radius
-        , x2 handX
-        , y2 handY
-        , stroke "#cb1122"
-        ]
+        (log <| "angle: " ++ toString angle)
+            [ x1 <| toString radius
+            , y1 <| toString radius
+            , x2 handX
+            , y2 handY
+            , stroke "#cb1122"
+            ]
 
 
 hourIndicator : number -> number -> Svg msg
